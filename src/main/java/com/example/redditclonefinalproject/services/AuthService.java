@@ -1,5 +1,7 @@
 package com.example.redditclonefinalproject.services;
 
+import com.example.redditclonefinalproject.dtos.AuthenticationResponse;
+import com.example.redditclonefinalproject.dtos.LoginRequest;
 import com.example.redditclonefinalproject.dtos.NotificationEmail;
 import com.example.redditclonefinalproject.dtos.RegisterRequest;
 import com.example.redditclonefinalproject.exceptions.SpringRedditException;
@@ -8,10 +10,13 @@ import com.example.redditclonefinalproject.models.VerificationToken;
 import com.example.redditclonefinalproject.repositories.UserRepository;
 import com.example.redditclonefinalproject.repositories.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -24,7 +29,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
-
+    private final AuthenticationManager authenticationManager;
     private final MailService mailService;
 
     @Transactional
@@ -68,4 +73,5 @@ public class AuthService {
         user.setEnabled(true);
         userRepository.save(user);
     }
+
 }

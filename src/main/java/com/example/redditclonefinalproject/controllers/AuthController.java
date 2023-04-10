@@ -1,5 +1,7 @@
 package com.example.redditclonefinalproject.controllers;
 
+import com.example.redditclonefinalproject.dtos.AuthenticationResponse;
+import com.example.redditclonefinalproject.dtos.LoginRequest;
 import com.example.redditclonefinalproject.dtos.RegisterRequest;
 import com.example.redditclonefinalproject.models.VerificationToken;
 import com.example.redditclonefinalproject.services.AuthService;
@@ -28,4 +30,5 @@ public class AuthController {
          authService.verifyAccount(token);
          return new ResponseEntity<>("Account activated successfully", HttpStatus.OK);
     }
+
 }
