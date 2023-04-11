@@ -7,6 +7,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
 @Document(collection = "User")
 @Data
 @AllArgsConstructor
@@ -23,6 +26,7 @@ public class User {
     private String email;
 
     private Instant created;
+    private List<String> roles = new ArrayList<>();
 
     private boolean enabled;
 }

@@ -1,5 +1,6 @@
 package com.example.redditclonefinalproject.configs;
 
+import com.example.redditclonefinalproject.securities.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +15,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtTokenFilter jwtTokenFilter;
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -26,32 +29,17 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.cors().and()
+        httpSecurity.cors().and()
                 .csrf().disable()
-                .authorizeHttpRequests(authorize -> authorize
+                .authorizeHttpRequests()
                         .requestMatchers("/api/auth/**")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/subreddit")
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/posts/")
-                        .permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/posts/**")
-                        .permitAll()
-                        .requestMatchers("/v2/api-docs",
-                                "/configuration/ui",
-                                "/swagger-resources/**",
-                                "/configuration/security",
-                                "/swagger-ui.html",
-                                "/webjars/**")
-                        .permitAll()
                         .anyRequest()
-                        .authenticated())
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
-                ).build();
+                        .authenticated();
+        httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        return httpSecurity.build();
     }
 
     @Bean

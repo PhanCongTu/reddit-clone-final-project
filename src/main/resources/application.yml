@@ -22,6 +22,6 @@ spring:
 jwt:
   expiration:
     time: 900000
-
+  secret: K1LqzK6eeD0g0BfgOg7SKs2K1LqzK6eeD0g0BfgOg7SK1LqzK6eeD0g0BfgOg7S
 server:
   port: 8080
