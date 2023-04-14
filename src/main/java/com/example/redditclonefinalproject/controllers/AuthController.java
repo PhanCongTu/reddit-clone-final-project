@@ -12,10 +12,12 @@ import com.example.redditclonefinalproject.services.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.Optional;
 
@@ -58,4 +60,10 @@ public class AuthController {
                 .loadUserByUsername(dto.getUsername());
         final TokenDetails result = jwtTokenUtils.getTokenDetails(userDetails, null);
         return new ResponseEntity<>(result, HttpStatus.OK);
-    }}
+    }
+    @GetMapping("/hello")
+    public ResponseEntity<String> sayHello(Principal principal) {
+        return new ResponseEntity<>(String.format("Hello %s", principal.getName()), HttpStatus.OK);
+    }
+}
+

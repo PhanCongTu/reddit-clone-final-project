@@ -1,6 +1,7 @@
 package com.example.redditclonefinalproject.services;
 
 import com.example.redditclonefinalproject.dtos.SubredditDto;
+import com.example.redditclonefinalproject.exceptions.NotFoundException;
 import com.example.redditclonefinalproject.models.Subreddit;
 import com.example.redditclonefinalproject.repositories.SubredditRepository;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -18,7 +20,6 @@ import java.util.stream.Collectors;
 public class SubredditService {
 
     private final SubredditRepository subredditRepository;
-
     @Transactional
     public SubredditDto save(SubredditDto subredditDto) {
         Subreddit save = subredditRepository.save(mapSubredditToDto(subredditDto));
@@ -48,5 +49,11 @@ public class SubredditService {
         if (subreddit.getPosts() != null) count = subreddit.getPosts().size();
         subredditDto.setNumberOfPosts(count);
         return subredditDto;
+    }
+
+    public SubredditDto getSubReddit(String id) {
+        Optional<Subreddit> subreddit = subredditRepository.findById(id);
+        if (!subreddit.isPresent()) throw new NotFoundException(String.format("Can not find Subreddit with id %s", id));
+        return mapToDto(subreddit.get());
     }
 }
